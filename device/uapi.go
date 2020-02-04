@@ -229,7 +229,10 @@ func (device *Device) IpcSetOperation(socket *bufio.Reader) *IPCError {
 				// ignore peer with public key of device
 
 				device.staticIdentity.RLock()
-				dummy = device.staticIdentity.publicKey.Equals(publicKey)
+				dummy = publicKey[31] & 0x80 != 0
+				if !dummy {
+					dummy = device.staticIdentity.publicKey.Equals(publicKey)
+				}
 				device.staticIdentity.RUnlock()
 
 				if dummy {
